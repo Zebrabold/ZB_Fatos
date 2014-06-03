@@ -3,7 +3,7 @@
 //======================= GERENCIANDO O TAMANHO DOS RESUMOS AUTOMÁTICOS
 add_filter('excerpt_length', 'my_excerpt_length');
 function my_excerpt_length($length) {
-return 20; }
+return 30; }
 
 
 
@@ -65,16 +65,29 @@ if(function_exists('add_theme_support')) {
     add_image_size( $name = 'bloco-padrao', $width = 300, $height = 125, $crop = true );
     add_image_size( $name = 'slider', $width = 620, $height = 360, $crop = true );
     add_image_size( $name = 'top-10', $width = 460, $height = 230, $crop = true );
-    add_image_size( $name = 'imagem-do-dia', $width = 800, $height = 650, $crop = true );
+    add_image_size( $name = 'imagem-do-dia', $width = 800, $height = 550, $crop = true );
 }
 
 
-//======================= // CPT - XXXX
-add_action( 'init', 'XXXX_register' );
-function XXXX_register() {
+//======================= TEMPO DE POSTAGEM
+function time_ago( $type = 'post' ) {
+  $d = 'comment' == $type ? 'get_comment_time' : 'get_post_time';
+
+  return human_time_diff($d('U'), current_time('timestamp')) . " " . __('atrás');
+
+}
+
+
+//======================= ARRUMANDO A GALERIA DENTRO DO POST
+
+
+
+//======================= // CPT - imagem-do-dia
+add_action( 'init', 'imagem_do_dia_register' );
+function imagem_do_dia_register() {
 	
 	 $labels = array(
-        'name' => _x('XXXX', 'post type general name'),
+        'name' => _x('Imagem do dia', 'post type general name'),
         'singular_name' => _x('post', 'post type singular name'),
         'add_new' => _x('Adicionar novo', 'post'),
         'add_new_item' => __('Adicionar novo post'),
@@ -98,10 +111,10 @@ function XXXX_register() {
         'capability_type' => 'post',
         'hierarchical' => false,
         'menu_position' => null,
-        'supports' => array('title','editor', 'tags')
+        'supports' => array('title','thumbnail')
       );
 	
-	register_post_type( 'XXXX', $args );
+	register_post_type( 'imagem_do_dia', $args );
 }
 
 
@@ -121,5 +134,75 @@ function filter_post_data( $data , $postarr ) {
 }
 
 
+//======================= MUDA O BOX DA IMAGEM DE DESTAQUE DE POSIÇÃO
+add_action('do_meta_boxes', 'customposttype_image_box');
+function customposttype_image_box() {
+  remove_meta_box( 'postimagediv', 'customposttype', 'side' );
+  add_meta_box('postimagediv', __('Custom Image'), 'post_thumbnail_meta_box', 'customposttype', 'normal', 'high');
+}
+
+
+//======================= NUMERACAO TOP-10
+function Get_Post_Number($postID){
+  $temp_query = $wp_query;
+  $postNumberQuery = new WP_Query('orderby=date&order=<strong>DESC</strong>&posts_per_page=-1');
+  $counter = 1;
+  $postCount = 0;
+  if($postNumberQuery->have_posts()) :
+    while ($postNumberQuery->have_posts()) : $postNumberQuery->the_post();
+      if ($postID == get_the_ID()){
+        $postCount = $counter;
+      } else {
+        $counter++;
+      }
+  endwhile; endif;
+  wp_reset_query();
+  $wp_query = $temp_query;
+  return $postCount;
+}
+
+//======================= FUNCIONA O TOP-10
+// function to display number of posts.
+function getPostViews($postID){
+    $count_key = 'post_views_count';
+    $count = get_post_meta($postID, $count_key, true);
+    if($count==''){
+        delete_post_meta($postID, $count_key);
+        add_post_meta($postID, $count_key, '0');
+        return '0 ';
+    }
+    return $count.' ';
+}
+ 
+// function to count views.
+function setPostViews($postID) {
+    $count_key = 'post_views_count';
+    $count = get_post_meta($postID, $count_key, true);
+    if($count==''){
+        $count = 0;
+        delete_post_meta($postID, $count_key);
+        add_post_meta($postID, $count_key, '0');
+    }else{
+        $count++;
+        update_post_meta($postID, $count_key, $count);
+    }
+}
+ 
+// Add it to a column in WP-Admin - (Optional)
+add_filter('manage_posts_columns', 'posts_column_views');
+add_action('manage_posts_custom_column', 'posts_custom_column_views',5,2);
+function posts_column_views($defaults){
+    $defaults['post_views'] = __(' ');
+    return $defaults;
+}
+function posts_custom_column_views($column_name, $id){
+    if($column_name === 'post_views'){
+        echo getPostViews(get_the_ID());
+    }
+}
+
+
+ini_set('post_max_size', '64M');
+ini_set('upload_max_filesize', '64M');
 
 ?>

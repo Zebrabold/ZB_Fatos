@@ -31,6 +31,10 @@
         <!-- ========== FONTES ============= -->
          <link href='http://fonts.googleapis.com/css?family=Lato|Sacramento|Righteous' rel='stylesheet' type='text/css'>
 
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="<?php bloginfo('template_directory'); ?>/js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
+
+
      <!--[if lt IE 6]>  
      <script type="text/javascript">window.location.href = "http://abetterbrowser.org/pt-br";</script>  
      <![endif]--> 
@@ -51,6 +55,15 @@
 
 <body <?php body_class(); ?>>
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&appId=302338833262843&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 <div class="container">
         
     <header class="header">
@@ -62,7 +75,7 @@
                 <nav class="grid_9 push_3">
                     <ul class="menu-principal">
                         <li class="menu-mais-lidas menu-p">
-                            <a href="#top-10">
+                            <a href="<?php bloginfo('url'); ?>#top-10">
                                 <h2>Mais lidas</h2>
                                 <span>As preferidas<br/>da galera</span>
                             </a>
@@ -73,11 +86,14 @@
                                 <span>Fique ligado nas<br/>últimas postagens</span>
                             </a>
                         </li>
-                        <li class="menu-assuntos menu-p">
-                            <a href="#">
-                                <h2>Assuntos</h2>
-                                <span>Os fatos separados<br/>por categorias</span>
-                            </a>
+                        <li class="dropdown menu-assuntos menu-p">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <h2>Assuntos</h2>
+                            <span>Os fatos separados<br/>por categorias</span>
+                            <b class="caret"></b></a>
+                          <ul class="dropdown-menu box">
+                            <?php wp_list_categories('orderby=name&exclude=1&title_li='); ?>
+                          </ul>
                         </li>
                     </ul>
                 </nav>
@@ -93,9 +109,9 @@
                 </ul>
                 <div class="grid_2 push_3">
                     <ul class="menu-social">
-                        <li><a href=""><img src="<?php bloginfo('template_directory'); ?>/img/ico-facebook.png" alt="" /></a></li>
-                        <li><a href=""><img src="<?php bloginfo('template_directory'); ?>/img/ico-youtube.png" alt="" /></a></li>
-                        <li><a href=""><img src="<?php bloginfo('template_directory'); ?>/img/ico-instagram.png" alt="" /></a></li>
+                        <li><a href="https://www.facebook.com/Desconhecidos.Fatos"><img src="<?php bloginfo('template_directory'); ?>/img/ico-facebook.png" alt="" /></a></li>
+                        <li><a href="https://www.youtube.com/user/fatosdesconhecidos"><img src="<?php bloginfo('template_directory'); ?>/img/ico-youtube.png" alt="" /></a></li>
+                        <li><a href="http://instagram.com/fatosdesconhecidos"><img src="<?php bloginfo('template_directory'); ?>/img/ico-instagram.png" alt="" /></a></li>
                     </ul>
                 </div>
                 <div class="grid_2 push_3">
@@ -116,7 +132,7 @@
             <div class="menu-sticky grid_9">
                 <ul>
                     <li class="menu-mais-lidas menu-p">
-                        <a href="#top-10">
+                        <a href="<?php bloginfo('url'); ?>#top-10">
                             <h2>Mais lidas</h2>
                         </a>
                     </li>
@@ -125,11 +141,14 @@
                             <h2>Novidades</h2>
                         </a>
                     </li>
-                    <li class="menu-assuntos menu-p">
-                        <a href="#">
+                    <li class="dropdown menu-assuntos menu-p">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <h2>Assuntos</h2>
-                        </a>
-                    </li>
+                          </a>
+                          <ul class="dropdown-menu box">
+                            <?php wp_list_categories('orderby=name&exclude=1&title_li='); ?>
+                          </ul>
+                        </li>
                 </ul>
             </div>
         </section>

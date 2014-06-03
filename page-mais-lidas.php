@@ -1,26 +1,32 @@
+<?php
+/*
+Template Name: Mais lidas
+*/
+?>
+
 <?php get_header();?>
     
 <div class="container_12">
-	<div class="container_12 titulo-pagina">
-	<div class="grid_12"><h2 class="titulo-de-secao">Assunto:<br/><span><?php single_cat_title(''); ?></span></h2></div>
+	<div class="grid_12 titulo-pagina"><h2 class="titulo-de-secao">Posts<br/><span>mais lidos</span></h2></div>
 </div>
-  	
+
+<div class="container_12">
   	<div class="conteudo grid_8">
-  		  <?php $paged = (get_query_var('paged')) ? get_query_var('paged') : 1; ?> 
-			<?php if (have_posts()) : ?><?php while (have_posts()) : the_post(); ?>
-              <a href="<?php the_permalink(); ?>">
-                <article class="post-2 box">
-                  <div class="thumbnail-post"><?php the_post_thumbnail('bloco-padrao'); ?></div>
-                  <h2><?php the_title(); ?></h2>
-                  <div class="contadores">
-                    <div class="ct-comentarios"><fb:comments-count href="<?php echo get_permalink($post->ID); ?>"></fb:comments-count></div>
-                    <div class="ct-views"><?php echo getPostViews(get_the_ID()); ?></div>
-                  </div>
-                  <div class="tempo-atras"><?php echo time_ago(); ?></div>
-                </article>
-              </a>
-          <?php endwhile; endif; ?> 
-          <?php wp_pagenavi(); ?>
+		<?php 
+	        echo do_shortcode('[wpp 
+	          range=all
+	          order_by=views 
+	          stats_views=1
+	          stats_comments=0
+	          thumbnail_width=300
+              thumbnail_height=125
+              wpp_start="<ol>"
+              wpp_end="</ol>"
+              title_length=200
+              limit=30 
+	          post_html="<li>{thumb} <a href={url}>{text_title}</a> </li>
+	        ]'); 
+	      ?>
 	</div>
 	
   	<div class="sidebar grid_4">

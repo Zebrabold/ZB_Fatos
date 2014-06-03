@@ -1,11 +1,19 @@
+<?php
+/*
+Template Name: Ultimas
+*/
+?>
+
 <?php get_header();?>
+
+<div class="container_12 titulo-pagina">
+	<div class="grid_12"><h2 class="titulo-de-secao">Posts<br/><span>mais recentes</span></h2></div>
+</div>
     
 <div class="container_12">
-	<div class="container_12 titulo-pagina">
-	<div class="grid_12"><h2 class="titulo-de-secao">Assunto:<br/><span><?php single_cat_title(''); ?></span></h2></div>
-</div>
   	
   	<div class="conteudo grid_8">
+  		<?php query_posts('posts_per_page=10'); ?>
   		  <?php $paged = (get_query_var('paged')) ? get_query_var('paged') : 1; ?> 
 			<?php if (have_posts()) : ?><?php while (have_posts()) : the_post(); ?>
               <a href="<?php the_permalink(); ?>">
